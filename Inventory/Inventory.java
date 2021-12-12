@@ -53,15 +53,20 @@ public class Inventory {
 
     // Displays the inventory
     public void displayInventory() {
+        System.out.println("--------------------------------------------------------------");
+        System.out.printf("|%-15s|%-30s|%-5s|%-8s|\n", "ID", "Product name", "QTY", "Price");
+        System.out.println("--------------------------------------------------------------");
         for(int i = 0; i < products.size(); i++) {
-            System.out.println(products.get(i));
+            Product product = products.get(i);
+            System.out.printf("|%-15d|%-30s|%-5d|%-8.2f|\n", product.getId(), product.getName(), product.getNumber(), product.getPrice());
         }
+        System.out.println("--------------------------------------------------------------");
     }
 
     // Returns the product with the name
-    public Product getProduct(int id) {
+    public Product getProduct(String productName) {
         for(int i = 0; i < products.size(); i++) {
-            if(products.get(i).getId() == id) {
+            if(products.get(i).getName().equalsIgnoreCase(productName)) {
                 return products.get(i);
             }
         }
@@ -69,8 +74,8 @@ public class Inventory {
     }
 
     // removes product from the inventory and returns the number of items deleted
-    public int removeStock(int id, int number) {
-        Product product = getProduct(id);
+    public int removeStock(String productName, int number) {
+        Product product = getProduct(productName);
         if(product != null) {
             int index = products.indexOf(product);
             int count = product.getNumber() - number;
@@ -89,8 +94,8 @@ public class Inventory {
 
     // Adds items to the inventory
     public void addStock(String productName, int id, int number, double price) {
-        Product product = getProduct(id);
-        if(getProduct(id) == null) {
+        Product product = getProduct(productName);
+        if(getProduct(productName) == null) {
             product = new Product(productName, id, number, price);
             products.add(product);               
         } else {
