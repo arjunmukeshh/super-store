@@ -1,0 +1,2 @@
+ignore this file
+this was made to make directories 
