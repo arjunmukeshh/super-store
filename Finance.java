@@ -33,6 +33,10 @@ public class Finance{
             bankBalance+=shoppingList.get(i).getPrice()*shoppingList.get(i).getNumber();
         }
     }
+    
+    void purchaseItem(Product product, int number) {
+        bankBalance += product.getPrice() * number;
+    }
 
     //Compare before and after for Profit or Loss
     void profitLoss(){
