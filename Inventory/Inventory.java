@@ -12,21 +12,26 @@ public class Inventory {
     public Product getProduct(int id):                                              Gets the product with the given id
     public int removeStock(int id, int number):                                     Removes the product with the given id
     public void addStock(String productName, int id, int number, double price):     Adds the stock the inventory
-    public void saveArray(String filename):                                         Saves the current inventory to the file
+    public void saveArray(String productsFileName):                                 Saves the current inventory to the file
+    public void writeToFile(String filename, Product product):                      Writes the product details to the file                       
     */ 
 
-    String filename;
+    String productsFileName;
+    String restockFilename;
     ArrayList<Product> products;
-    public Inventory(String filename) {
-        this.filename = filename;
+
+
+    public Inventory(String productsFileName, String restockFilename) {
+        this.productsFileName = productsFileName;
+        this.restockFilename = restockFilename;
         products = new ArrayList<Product>();
-        makeArray();
+        makeArray(productsFileName);
     }
 
     // makes the array
-    public void makeArray() {
+    public void makeArray(String filename) {
         try{
-            File file = new File(this.filename);
+            File file = new File(filename);
             Scanner parser = new Scanner(file);
             while(parser.hasNextLine()) {
                 String productLine = parser.nextLine();
@@ -74,6 +79,7 @@ public class Inventory {
                 return number;
             } else {
                 int c = product.getNumber();
+                writeToFile(restockFilename, product);
                 products.remove(index);
                 return c;
             }            
@@ -94,20 +100,32 @@ public class Inventory {
     }
 
     // Saves the current inventory to the file
-    public void saveArray(String filename) {
+    public void saveArray(String productsFileName) {
         try {
-            FileWriter writer = new FileWriter(new File(filename));
-            for(int i = 0; i < products.size(); i++) {
-                Product product = products.get(i);
-                String toFile = String.format("%s,%d,%d,%f\n", product.getName(), product.getId(), product.getNumber(), product.getPrice());
-                writer.write(toFile);
-            }
+            FileWriter writer = new FileWriter(new File(productsFileName));
             writer.close();
+            for(int i = 0; i < products.size(); i++) {
+                writeToFile(productsFileName, products.get(i));
+            }
+            //writer.close();
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         } catch (IOException e) {
             System.out.println("File permission denied");
         }
     }
-    
+
+    // writes to a file
+    public void writeToFile(String filename, Product product) {
+        try {
+        FileWriter writer = new FileWriter(new File(filename), true); // append mode
+        String toFile = String.format("%s,%d,%d,%f\n", product.getName(), product.getId(), product.getNumber(), product.getPrice());
+        writer.write(toFile);
+        writer.close();
+        } catch(FileNotFoundException e) {
+            System.out.println("File not found!");
+        } catch (IOException e) {
+            System.out.println("Can't write into file.");
+        }
+    }
 }
