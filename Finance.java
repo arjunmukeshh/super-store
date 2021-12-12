@@ -1,11 +1,9 @@
-package JAVA.MiniProject;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.util.*;
-import JAVA.MiniProject.Inventory.Product.Product;
+import Inventory.Product.Product;
 
 public class Finance{
     double bankBalance;
