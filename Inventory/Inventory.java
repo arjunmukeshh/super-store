@@ -1,6 +1,7 @@
 package Inventory;
 import java.util.*;
 
+
 import Inventory.Product.Product;
 
 
@@ -30,12 +31,14 @@ public class Inventory {
 
     // makes the array
     public void makeArray(String filename) {
+        //System.out.println("called");
         try{
             File file = new File(filename);
             Scanner parser = new Scanner(file);
             while(parser.hasNextLine()) {
                 String productLine = parser.nextLine();
-                if(!productLine.matches(".*,[0-9]*,[0-9]*,[0-9]*.[0-9]*,.*")) {
+                //System.out.println(productLine);
+                if(!productLine.matches(".*,[0-9]*,[0-9]*,[0-9]*.[0-9]*,[0-9]*,[0-9]*.*")) {
                     continue;
                 }
                 String[] tokens = productLine.split(",");
@@ -45,6 +48,7 @@ public class Inventory {
                 double price = Double.parseDouble(tokens[3].strip());
                 int restockAmt = Integer.parseInt(tokens[4].strip());
                 double costPrice = Double.parseDouble(tokens[5].strip());
+                
                 addStock(name, id, number, price, restockAmt, costPrice);
             }
             parser.close();
@@ -104,6 +108,7 @@ public class Inventory {
             int index = products.indexOf(product);
             products.get(index).setNumber(products.get(index).getNumber()+number);;
         }
+        //System.out.println(product.getRestockAmt());
     }
 
     // Saves the current inventory to the file
@@ -167,8 +172,15 @@ public class Inventory {
         Scanner s =  new Scanner(new File(this.restockFilename));
         while(s.hasNextLine()) {
             String line = s.nextLine();
-            System.out.println(line);
-            fileWriter.write(line+"\n");
+            //System.out.println(line);
+            String[] tokens = line.split(",");
+            String name = tokens[0].strip();
+            int id = Integer.parseInt(tokens[1].strip());
+            int number = Integer.parseInt(tokens[2].strip());
+            double price = Double.parseDouble(tokens[3].strip());
+            int restockAmt = Integer.parseInt(tokens[4].strip());
+            double costPrice = Double.parseDouble(tokens[5].strip());
+            fileWriter.write(String.format("%s,%d,%d,%f,%d,%f\n", name, id, restockAmt, price, restockAmt, costPrice));
         }
         fileWriter.close();
         } catch(IOException e) {
