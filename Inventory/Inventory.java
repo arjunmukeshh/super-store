@@ -66,7 +66,7 @@ public class Inventory {
             Product product = products.get(i);
             System.out.printf("|%-15d|%-30s|%-5d|%-8.2f|\n", product.getId(), product.getName(), product.getNumber(), product.getPrice());
         }
-        System.out.println("--------------------------------------------------------------");
+        System.out.println("--------------------------------------------------------------\n\n");
     }
 
     // Returns the product with the name
