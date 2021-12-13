@@ -4,12 +4,23 @@ public class Product {
     private double price;
     private int number;
     private int id;
-
-    public Product(String name, int id, int number, double price) {
+    private int restockAmt;
+    private double costPrice;
+    public Product(String name, int id, int number, double price, int restockAmt, double costPrice) {
         this.name = name;
         this.number = number;
         this.id = id;
         this.price = price;
+        this.restockAmt = restockAmt;
+        this.costPrice = costPrice;
+    }
+
+    public int getRestockAmt() {
+        return this.restockAmt;
+    }
+
+    public double getCostPrice() {
+        return this.costPrice;
     }
 
     // Gets the name of the product
