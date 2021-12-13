@@ -3,6 +3,7 @@ import java.util.*;
 
 import Inventory.Product.Product;
 
+
 import java.io.*;
 
 public class Inventory {
@@ -20,12 +21,11 @@ public class Inventory {
     String restockFilename;
     ArrayList<Product> products;
 
-
     public Inventory(String productsFileName, String restockFilename) {
         this.productsFileName = productsFileName;
         this.restockFilename = restockFilename;
         products = new ArrayList<Product>();
-        makeArray(productsFileName);
+        //makeArray(productsFileName);
     }
 
     // makes the array
@@ -35,7 +35,7 @@ public class Inventory {
             Scanner parser = new Scanner(file);
             while(parser.hasNextLine()) {
                 String productLine = parser.nextLine();
-                if(!productLine.matches(".*,[0-9]*,[0-9]*,[0-9]*.[0-9]*")) {
+                if(!productLine.matches(".*,[0-9]*,[0-9]*,[0-9]*.[0-9]*,.*")) {
                     continue;
                 }
                 String[] tokens = productLine.split(",");
@@ -43,7 +43,9 @@ public class Inventory {
                 int id = Integer.parseInt(tokens[1].strip());
                 int number = Integer.parseInt(tokens[2].strip());
                 double price = Double.parseDouble(tokens[3].strip());
-                addStock(name, id, number, price);
+                int restockAmt = Integer.parseInt(tokens[4].strip());
+                double costPrice = Double.parseDouble(tokens[5].strip());
+                addStock(name, id, number, price, restockAmt, costPrice);
             }
             parser.close();
         } catch(FileNotFoundException e) {
@@ -93,10 +95,10 @@ public class Inventory {
     }
 
     // Adds items to the inventory
-    public void addStock(String productName, int id, int number, double price) {
+    public void addStock(String productName, int id, int number, double price, int restockAmt, double costPrice) {
         Product product = getProduct(productName);
         if(getProduct(productName) == null) {
-            product = new Product(productName, id, number, price);
+            product = new Product(productName, id, number, price, restockAmt, costPrice);
             products.add(product);               
         } else {
             int index = products.indexOf(product);
@@ -124,7 +126,7 @@ public class Inventory {
     public void writeToFile(String filename, Product product) {
         try {
         FileWriter writer = new FileWriter(new File(filename), true); // append mode
-        String toFile = String.format("%s,%d,%d,%f\n", product.getName(), product.getId(), product.getNumber(), product.getPrice());
+        String toFile = String.format("%s,%d,%d,%f,%d,%f\n", product.getName(), product.getId(), product.getNumber(), product.getPrice(),product.getRestockAmt(), product.getCostPrice());
         writer.write(toFile);
         writer.close();
         } catch(FileNotFoundException e) {
@@ -132,5 +134,52 @@ public class Inventory {
         } catch (IOException e) {
             System.out.println("Can't write into file.");
         }
+    }
+
+    public ArrayList<Product> restock() {
+        ArrayList<Product> products = new ArrayList<Product>();
+        try{
+            File file = new File(this.restockFilename);
+            Scanner parser = new Scanner(file);
+            while(parser.hasNextLine()) {
+                String productLine = parser.nextLine();
+                if(!productLine.matches(".*,[0-9]*,[0-9]*,[0-9]*.[0-9]*,.*")) {
+                    continue;
+                }
+                String[] tokens = productLine.split(",");
+                String name = tokens[0].strip();
+                int id = Integer.parseInt(tokens[1].strip());
+                int number = Integer.parseInt(tokens[2].strip());
+                double price = Double.parseDouble(tokens[3].strip());
+                int restockAmt = Integer.parseInt(tokens[4].strip());
+                double costPrice = Double.parseDouble(tokens[5].strip());
+                //System.out.println(name+ id+ number+ price);
+                products.add(new Product(name, id, number, price, restockAmt, costPrice));
+                // if current invent =0. spend money and buy 
+            }
+            
+            parser.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found!");
+        }
+        try {
+        FileWriter fileWriter = new FileWriter(new File(this.productsFileName), true);
+        Scanner s =  new Scanner(new File(this.restockFilename));
+        while(s.hasNextLine()) {
+            String line = s.nextLine();
+            System.out.println(line);
+            fileWriter.write(line+"\n");
+        }
+        fileWriter.close();
+        } catch(IOException e) {
+            System.out.println("File permission denied");
+        }
+        try{
+            FileWriter writer = new FileWriter(new File(restockFilename));
+            writer.close();
+        } catch(IOException e) {
+            System.out.println("File permission denied");
+        }
+        return products;
     }
 }
