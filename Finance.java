@@ -24,6 +24,7 @@ public class Finance{
         }
     }
 
+    // saves the balance to the file
     public void saveBalance() {
         try {
             FileWriter writer = new FileWriter(new File(this.balanceFilename));
@@ -34,20 +35,14 @@ public class Finance{
         }
     }
 
-    /*void payEmployees(Employee[] employees){
-        for (int i=0;i<employees.length;i++){
-            bankBalance-=employees[i].getWage();
-        }
-    }*/
-
     //Add balance from item purchases
-    void purchaseItems(ArrayList<Product> shoppingList){
+    void sellItems(ArrayList<Product> shoppingList){
         for (int i=0;i<shoppingList.size();i++){
             bankBalance+=shoppingList.get(i).getPrice()*shoppingList.get(i).getNumber();
         }
     }
 
-    double purchaseItem(Product product, int number) {
+    double sellItem(Product product, int number) {
         bankBalance += product.getPrice() * number;
         return product.getPrice() * number;
     }
@@ -55,11 +50,11 @@ public class Finance{
     //Restock items and remove amount from balance
     void purchaseStock(ArrayList<Product> newStock){
         for (int i=0;i<newStock.size();i++){
-            bankBalance-=newStock.get(i).getPrice()*newStock.get(i).getRestockAmt();
+            bankBalance-=newStock.get(i).getCostPrice()*newStock.get(i).getRestockAmt();
         }
     }
 
     public double calculateProfit() {
-        return this.profit-bankBalance;
+        return bankBalance-this.profit;
     }
 }

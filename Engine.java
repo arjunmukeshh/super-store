@@ -1,43 +1,39 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Finance.Finance;
 import Inventory.Inventory;
 import Inventory.Product.Product;
 import emp.Employee;
-import emp.EmployeeManagement;
+
 
 public class Engine {
     public static void main(String[] args) {
         Inventory inventory = new Inventory("products.csv", "restock.csv");
+        Finance finance = new Finance("balance.txt");
         ArrayList<Product> restock = inventory.restock();
         inventory.makeArray("products.csv");
-        Finance finance = new Finance("balance.txt");
         finance.purchaseStock(restock);
-
-        EmployeeManagement employeeManagement = new EmployeeManagement();
-        //System.out.println(finance.bankBalance);
-        //System.out.println(finance.bankBalance);
-        //Employee.employeemanage();
-        //System.out.println(e);
-        //System.out.println("Size: "+ e.size());
-        //System.out.println(employeeManagement.getEmployees());
-        ArrayList<Employee> e = Employee.readObjects();
-        
-
         Scanner parser = new Scanner(System.in);
         boolean end = false;
+        String line = "";
+        System.out.println("\t\t\tStore Management System\n\n");
         while(!end) {
-            String line = parser.nextLine();
+            line = parser.nextLine();
             if(line.strip().equalsIgnoreCase("products")) {
                 inventory.displayInventory();
             
             }
-            else if(line.strip().equalsIgnoreCase("employee")) {
+            else if(line.strip().equalsIgnoreCase("manage employees")) {
+                System.out.println("\t\t\tEmployee Management System\n\n");
                 Employee.employeemanage();
+                System.out.println("Employee management system terminated.\n");
+            } else if(line.strip().equalsIgnoreCase("employee print")) {
                 System.out.println(Employee.readObjects());
+                System.out.println();
             }
             else if(line.strip().equalsIgnoreCase("purchase")) {
-                System.out.println("Enter item: ");
+                System.out.println("Enter the item name and quantity: ");
                 String item = parser.nextLine();
                 if(item.matches(".* [0-9]*")) {
                     String[] tokens = item.strip().toLowerCase().split(" ");
@@ -46,10 +42,12 @@ public class Engine {
                     Product product = inventory.getProduct(itemName[0]); // join array
                     int purchase = purchaseProduct(inventory, finance, product, Integer.parseInt(tokens[tokens.length-1].strip()));
                     if(purchase > 0) {
-                        System.out.println("Successfully purchased "+purchase+" "+product.getName());
+                        System.out.println("Successfully purchased "+purchase+" "+product.getName()+"\n\n");
                     }
+                } else {
+                    System.out.println();
+                    continue;
                 }
-
             } else if(line.strip().equalsIgnoreCase("add to cart") || line.strip().equalsIgnoreCase("cart")) { 
                 System.out.println("Enter items: ");
                 String item = "";
@@ -84,20 +82,23 @@ public class Engine {
                 System.out.println("---------------------------------------------");
             } else if(line.strip().equalsIgnoreCase("end")) {
                 end = true;
-            }
+            } 
         }
         parser.close();
-        /*Product product = inventory.getProduct(205001003);
-        System.out.println(inventory.removeStock(205001003, 1));
-        
-        if(product != null) { // upgrade to exception
-            System.out.println(product);
-        } else {
-            System.out.println("product not found");
-        }
-        */
         finance.saveBalance();
         inventory.saveArray("products.csv");
+        double profit = finance.calculateProfit();
+        if(profit>0) {
+            System.out.println("Today's profit was "+profit+"/-");
+        } else {
+            System.out.println("Today's loss was "+profit*-1+"/-");
+        }
+    }
+
+    public String help() {
+        String helpMessage = String.format("\t\tCommands\n");
+        helpMessage+= String.format("\t\t%20s\n");
+        return helpMessage;
     }
 
     public Product parseAndGetProduct(Inventory inventory, Finance finance, String item) {
@@ -111,8 +112,11 @@ public class Engine {
 
     
     public static int purchaseProduct(Inventory inventory, Finance finance, Product product, int number) {
-        int available = inventory.removeStock(product.getName(), number);
-        finance.purchaseItem(product, available);
-        return available;
+        if(product != null) {
+            int available = inventory.removeStock(product.getName(), number);
+            finance.sellItem(product, available);
+            return available;
+        }
+        return 0;
     }
 }
