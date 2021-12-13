@@ -162,7 +162,9 @@ public class Employee implements Serializable{
         }
         return reads;
     }
-
+    public  double salary(){
+        return hour*hourlyWage;
+    }
 
 }
 
