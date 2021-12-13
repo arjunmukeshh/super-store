@@ -31,7 +31,12 @@ public class Engine {
             if(line.strip().equalsIgnoreCase("products")) {
                 inventory.displayInventory();
             
-            } else if(line.strip().equalsIgnoreCase("purchase")) {
+            }
+            else if(line.strip().equalsIgnoreCase("employee")) {
+                Employee.employeemanage();
+                System.out.println(Employee.readObjects());
+            }
+            else if(line.strip().equalsIgnoreCase("purchase")) {
                 System.out.println("Enter item: ");
                 String item = parser.nextLine();
                 if(item.matches(".* [0-9]*")) {
