@@ -3,10 +3,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
 
-public class Employee implements Serializable{
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class Employee {
+    
     double hour;
     double hourlyWage;
     int id;
@@ -74,6 +72,7 @@ public class Employee implements Serializable{
         double wage = s.nextDouble();
         System.out.println("Enter hours worked");
         double hours = s.nextDouble();
+
         // T a = (T)(new Employee());
         if(type.equalsIgnoreCase("janitor"))
             return  new Janitor(hours, wage, id, aadhar, name, age);
@@ -156,15 +155,13 @@ public class Employee implements Serializable{
                 else reads.add(new Employee(Double.parseDouble(tokens[6].strip()),Double.parseDouble(tokens[5].strip()),Integer.parseInt(tokens[4].strip()),tokens[1].strip(),tokens[0].strip(),Integer.parseInt(tokens[3].strip())));
                         //hours, wage, id, aadhar, name, age
             }
-            System.out.println(" "+reads.toString());
+            //System.out.println(" "+reads.toString());
         }catch (IOException e){
             //
         }
         return reads;
     }
-    public  double salary(){
-        return hour*hourlyWage;
-    }
+
 
 }
 
