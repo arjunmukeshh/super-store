@@ -6,6 +6,7 @@ public class Product {
     private int id;
     private int restockAmt;
     private double costPrice;
+
     public Product(String name, int id, int number, double price, int restockAmt, double costPrice) {
         this.name = name;
         this.number = number;
@@ -15,10 +16,12 @@ public class Product {
         this.costPrice = costPrice;
     }
 
+    // gets the restock amount of the product
     public int getRestockAmt() {
         return this.restockAmt;
     }
 
+    // gets the cost price of the product
     public double getCostPrice() {
         return this.costPrice;
     }
