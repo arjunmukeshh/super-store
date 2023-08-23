@@ -1,6 +1,10 @@
 # super-store
 Java project to manage a store and control everything from payroll to its inventory. 
 
+• Developed a supermarket management system written in Java to help small businesses run their store, control their inventory and manage their
+employees.
+• Ideated a method to allow the supermarket to enter its data via .csv files ensuring ease of use and compatibility with existing systems. Developed a
+guide to help users navigate the application.
 
 Running Instructions
 Download and compile all the files using the Java compiler.
